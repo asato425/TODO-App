@@ -7,7 +7,12 @@ function updateStatus(date, index, status) {
         body: JSON.stringify({ status: status }),
     }).then(response => {
         if (response.ok) {
-            location.reload();
+            response.json().then(data => {
+                const statusElement = document.querySelector(`#status-${data.index}`);
+                if (statusElement) {
+                    statusElement.textContent = data.status;
+                }
+            });
         } else {
             alert('ステータスの更新に失敗しました');
         }
