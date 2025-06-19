@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODOアプリ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #555;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        input[type="text"], input[type="date"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        a {
+            color: #ff4d4d;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .status-未 {
+            color: red;
+        }
+        .status-中 {
+            color: orange;
+        }
+        .status-済 {
+            color: green;
+        }
+        .day-container {
+            margin-bottom: 20px;
+        }
+        .todo-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+            flex-wrap: wrap; /* 詳細を下に配置するための設定 */
+        }
+        .todo-details {
+            display: none;
+            width: 100%; /* 詳細を全幅で表示 */
+            margin-top: 5px;
+            color: #555;
+            word-wrap: break-word; /* 長い単語を改行 */
+            overflow-wrap: break-word; /* 長い単語を改行 */
+        }
+        .todo-item.open .todo-details {
+            display: block;
+        }
+        .todo-item span {
+            flex: 1;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        .todo-item select, .todo-item a {
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TODOリスト</h1>
+        <form action="/" method="get">
+            <label for="start_date">スタート日付:</label>
+            <input type="date" id="start_date" name="start_date" value="{{ week_dates[0] }}">
+            <button type="submit">表示</button>
+        </form>
+
+        <div>
+            {% for date in week_dates %}
+            <div class="day-container" data-date="{{ date }}">
+                <h2>{{ date }}</h2>
+                <form action="/add" method="post">
+                    <input type="hidden" name="date" value="{{ date }}">
+                    <input type="text" name="summary" placeholder="概要">
+                    <input type="text" name="details" placeholder="詳細">
+                    <button type="submit">追加</button>
+                </form>
+                <ul>
+                    {% for todo in week_todos[date] %}
+                    <li class="todo-item" onclick="toggleDetails(this, event)">
+                        <span class="status-{{ todo['status'] }}">{{ loop.index }} {{ todo['summary'] }}</span>
+                        <select name="status" onchange="updateStatus('{{ date }}', {{ loop.index0 }}, this.value)">
+                            <option value="未" {% if todo['status'] == '未' %}selected{% endif %}>未</option>
+                            <option value="中" {% if todo['status'] == '中' %}selected{% endif %}>中</option>
+                            <option value="済" {% if todo['status'] == '済' %}selected{% endif %}>済</option>
+                        </select>
+                        <a href="/delete/{{ date }}/{{ loop.index0 }}">削除</a>
+                        <div class="todo-details">{{ todo['details'] }}</div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        function updateStatus(date, index, status) {
+            fetch(`/update_status/${date}/${index}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: status }),
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('ステータスの更新に失敗しました');
+                }
+            });
+        }
+
+        function toggleDetails(element, event) {
+            // ステータス選択時は詳細の表示非表示を切り替えない
+            if (event.target.tagName.toLowerCase() === 'select') {
+                return;
+            }
+            element.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>
