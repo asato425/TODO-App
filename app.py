@@ -34,8 +34,11 @@ def add():
 @app.route('/delete/<date>/<int:todo_id>')
 def delete(date, todo_id):
     start_date = request.args.get('start_date')  # スタート日付を取得
-    if date in todos and 0 <= todo_id < len(todos[date]):
-        todos[date].pop(todo_id)
+    if date not in todos:
+        return jsonify({'error': 'Invalid date'}), 404
+    if not (0 <= todo_id < len(todos[date])):
+        return jsonify({'error': 'Invalid todo_id'}), 404
+    todos[date].pop(todo_id)
     return redirect(url_for('index', start_date=start_date))
 
 @app.route('/update_status/<date>/<int:todo_id>', methods=['POST'])
