@@ -21,20 +21,22 @@ def add():
     date = request.form.get('date')
     summary = request.form.get('summary')
     details = request.form.get('details', '')  # デフォルト値を空文字に設定
+    start_date = request.form.get('start_date') or request.args.get('start_date')  # スタート日付を取得
+
     if date and summary:
         if date not in todos:
             todos[date] = []
         todos[date].append({'summary': summary, 'details': details, 'status': '未'})
-    return redirect(url_for('index', start_date=date))
+
+    # スタート日付を保持してリダイレクト
+    return redirect(url_for('index', start_date=start_date))
 
 @app.route('/delete/<date>/<int:todo_id>')
 def delete(date, todo_id):
+    start_date = request.args.get('start_date')  # スタート日付を取得
     if date in todos and 0 <= todo_id < len(todos[date]):
         todos[date].pop(todo_id)
-        return redirect(url_for('index', start_date=date))
-    else:
-        app.logger.warning(f"Failed to delete todo: date={date}, todo_id={todo_id} - Invalid date or todo_id.")
-        return jsonify({'error': 'Invalid date or todo_id'}), 400
+    return redirect(url_for('index', start_date=start_date))
 
 @app.route('/update_status/<date>/<int:todo_id>', methods=['POST'])
 def update_status(date, todo_id):

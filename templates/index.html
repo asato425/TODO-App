@@ -21,6 +21,7 @@
             <div class="day-container" data-date="{{ date }}">
                 <h2>{{ date }}</h2>
                 <form action="/add" method="post">
+                    <input type="hidden" name="start_date" value="{{ week_dates[0] }}">
                     <input type="hidden" name="date" value="{{ date }}">
                     <input type="text" name="summary" placeholder="概要">
                     <input type="text" name="details" placeholder="詳細">
@@ -29,13 +30,13 @@
                 <ul>
                     {% for todo in week_todos[date] %}
                     <li class="todo-item" onclick="toggleDetails(this, event)">
-                        <span class="status-{{ todo['status'] }}">{{ loop.index }} {{ todo['summary'] }}</span>
+                        <span id="status-{{ date }}-{{ loop.index0 }}" class="status-{{ todo['status'] }}">{{ loop.index }} {{ todo['summary'] }}</span>
                         <select name="status" onchange="updateStatus('{{ date }}', {{ loop.index0 }}, this.value)">
                             <option value="未" {% if todo['status'] == '未' %}selected{% endif %}>未</option>
                             <option value="中" {% if todo['status'] == '中' %}selected{% endif %}>中</option>
                             <option value="済" {% if todo['status'] == '済' %}selected{% endif %}>済</option>
                         </select>
-                        <a href="/delete/{{ date }}/{{ loop.index0 }}">削除</a>
+                        <a href="/delete/{{ date }}/{{ loop.index0 }}?start_date={{ week_dates[0] }}">削除</a>
                         <div class="todo-details">{{ todo['details'] }}</div>
                     </li>
                     {% endfor %}
