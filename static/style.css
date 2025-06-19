@@ -1,0 +1,102 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    text-align: center;
+    color: #555;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+input[type="text"], input[type="date"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+button {
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+}
+ul {
+    list-style: none;
+    padding: 0;
+}
+li {
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+a {
+    color: #ff4d4d;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+.status-未 {
+    color: red;
+}
+.status-中 {
+    color: orange;
+}
+.status-済 {
+    color: green;
+}
+.day-container {
+    margin-bottom: 20px;
+}
+.todo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+    flex-wrap: wrap;
+}
+.todo-details {
+    display: none;
+    width: 100%;
+    margin-top: 5px;
+    color: #555;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+.todo-item.open .todo-details {
+    display: block;
+}
+.todo-item span {
+    flex: 1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+.todo-item select, .todo-item a {
+    flex-shrink: 0;
+}
