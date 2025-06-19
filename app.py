@@ -31,7 +31,10 @@ def add():
 def delete(date, todo_id):
     if date in todos and 0 <= todo_id < len(todos[date]):
         todos[date].pop(todo_id)
-    return redirect(url_for('index', start_date=date))
+        return redirect(url_for('index', start_date=date))
+    else:
+        app.logger.warning(f"Failed to delete todo: date={date}, todo_id={todo_id} - Invalid date or todo_id.")
+        return jsonify({'error': 'Invalid date or todo_id'}), 400
 
 @app.route('/update_status/<date>/<int:todo_id>', methods=['POST'])
 def update_status(date, todo_id):
